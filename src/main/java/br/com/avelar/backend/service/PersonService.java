@@ -1,19 +1,33 @@
 package br.com.avelar.backend.service;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 
+import br.com.avelar.backend.persistence.GenericDaoJpa;
 import br.com.avelar.backend.rest.model.Person;
 
 @Stateless
 public class PersonService {
 	
+	@Inject
+	private GenericDaoJpa<Person> personDao;
+	
+	public void savePerson(Person person) {
+		personDao.persist(person);
+	}
+	
 	public List<Person> findAll() {
-		List<Person> pessoas = new LinkedList<>();
-		pessoas.add(new Person("Geovanny", 21l));
-		return pessoas;
+		return personDao.all().find();
+	}
+	
+	public void deletePerson(Person person) {
+		Person p = personDao.find(person.getId());
+		
+		if(p != null) {
+			personDao.delete(p);
+		}
 	}
 	
 }
